@@ -1,4 +1,6 @@
 #include "Contact.hpp"
+#include <iomanip>
+#include <sstream>
 
 Contact::Contact()
 {
@@ -34,11 +36,13 @@ Contact& Contact::operator=(const Contact& other)
 
 std::ostream& operator << (std::ostream& os, const Contact& c)
 {
-	os << "Contact with information:\n"
-		<< "First Name:\t" << c.first_name << std::endl
-		<< "Last Name:\t" << c.last_name << std::endl
-		<< "Nickname:\t" << c.nickname << std::endl
-		<< "Number:\t" << c.number << std::endl
-		<< "Secret:\t" << c.dark_secret << std::endl;
+	std::stringstream ss;
+	ss << "Contact with information:\n" << std::left
+		<< std::setw(12) << "First Name:" << c.first_name << std::endl
+		<< std::setw(12) << "Last Name:" << c.last_name << std::endl
+		<< std::setw(12) << "Nickname:" << c.nickname << std::endl
+		<< std::setw(12) << "Number:" << c.number << std::endl
+		<< std::setw(12) << "Secret:" << c.dark_secret << std::endl;
+	os << ss.str();
 	return (os);
 }

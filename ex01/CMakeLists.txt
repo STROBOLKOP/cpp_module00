@@ -23,6 +23,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS True)
 add_subdirectory(classes)
 list(APPEND EXTRA_LIBS classes)
 
+add_subdirectory(utils/string_utils)
+list(APPEND EXTRA_LIBS string_utils)
+
 add_executable(${PROJECT_NAME})
 target_sources(${PROJECT_NAME} PUBLIC main.cpp)
 target_link_libraries(${PROJECT_NAME} PUBLIC ${EXTRA_LIBS})

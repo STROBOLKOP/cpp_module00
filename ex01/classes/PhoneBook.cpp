@@ -1,4 +1,5 @@
 #include "PhoneBook.hpp"
+#include "string_utils.hpp"
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -6,9 +7,7 @@
 PhoneBook::PhoneBook()
 {
 	for (int i = 0; i < 8; i++)
-	{
 		list[i] = Contact();
-	}
 	index = 0;
 }
 
@@ -16,9 +15,7 @@ PhoneBook::PhoneBook(const PhoneBook& other)
 {
 	index = other.index;
 	for (int i = 0; i < 8; i++)
-	{
 		list[i] = other.list[i];
-	}
 }
 
 PhoneBook::~PhoneBook()
@@ -29,9 +26,7 @@ PhoneBook&	PhoneBook::operator=(const PhoneBook& other)
 {
 	index = other.index;
 	for (int i = 0; i < 8; i++)
-	{
 		list[i] = other.list[i];
-	}
 	return (*this);
 }
 
@@ -77,26 +72,42 @@ std::ostream& operator << (std::ostream& os, const PhoneBook& phonebook)
 	return (os);
 }
 
-// TODO: "A saved contact can't have empty fields"
-// TODO: catch EOF during input here
+static int	input_contact_info(const std::string prompt, std::string& field, bool reduce_input = true)
+{
+	std::string input;
+	while (std::cout << prompt)
+	{
+		getline(std::cin, input);
+		if (reduce_input)
+			input = reduce(input);
+		else
+			input = trim(input);
+		if (std::cin.eof())
+			return (1);
+		if (input.empty())
+		{
+			std::cout << "Error: A saved contact can't have empty fields.\n";
+			continue ;
+		}
+		break ;
+	}
+	field = input;
+	return (0);
+}
+
 int	PhoneBook::add_contact(void)
 {
 	Contact c = Contact();
-	std::cout << "First Name: ";
-	getline(std::cin, c.first_name);
-	if (std::cin.eof()) return (1);
-	std::cout << "Last Name: ";
-	getline(std::cin, c.last_name);
-	if (std::cin.eof()) return (1);
-	std::cout << "Nickname: ";
-	getline(std::cin, c.nickname);
-	if (std::cin.eof()) return (1);
-	std::cout << "Number: ";
-	getline(std::cin, c.number);
-	if (std::cin.eof()) return (1);
-	std::cout << "Dark Secret: ";
-	getline(std::cin, c.dark_secret);
-	if (std::cin.eof()) return (1);
+	if (input_contact_info("First Name: ", c.first_name))
+		return (1);
+	if (input_contact_info("Last Name: ", c.last_name))
+		return (1);
+	if (input_contact_info("Nickname: ", c.nickname))
+		return (1);
+	if (input_contact_info("Number: ", c.number))
+		return (1);
+	if (input_contact_info("Dark Secret: ", c.dark_secret))
+		return (1);
 	std::cout << std::endl;
 	return (add_contact(c));
 }
@@ -105,6 +116,7 @@ int	PhoneBook::add_contact(const Contact& contact)
 {
 	list[index] = contact;
 	index = (index + 1) % 8;
+	std::cout << "Contact succesfully added." << std::endl;
 	return (0);
 }
 

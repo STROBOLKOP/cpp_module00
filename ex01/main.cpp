@@ -17,6 +17,7 @@ void	msg_welcome(void)
 	std::cout
 		<< "Welcome to your Awesome PhoneBook\n"
 		<< "We can store 8 Contacts for you!\n"
+		<< std::endl;
 		;
 	msg_help();
 }
@@ -30,7 +31,9 @@ void	msg_bad_input(const std::string in)
 
 int	parse_input(PhoneBook& book, const std::string& input)
 {
-	if (input == "EXIT")
+	if (std::cin.eof())
+		return (1);
+	else if (input == "EXIT")
 		return (1);
 	else if (input == "HELP")
 		msg_help();
@@ -57,7 +60,7 @@ int	program_loop(void)
 		if (parse_input(book, input))
 			break ;
 	}
-	std::cout << "Goodbye!\n";
+	std::cout << (std::cin.eof() ? "\n" : "") << "Goodbye!\n";
 	return (0);
 }
 
