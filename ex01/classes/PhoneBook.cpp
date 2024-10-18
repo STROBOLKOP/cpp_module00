@@ -30,6 +30,18 @@ PhoneBook&	PhoneBook::operator=(const PhoneBook& other)
 	return (*this);
 }
 
+Contact*	PhoneBook::get_list(void)
+{
+	return (&list[0]);
+}
+
+Contact	PhoneBook::get_contact(int index) const
+{
+	if (index < 0 || 8 <= index)
+		throw std::invalid_argument("Index out of range for PhoneBook.");
+	return (list[index]);
+}
+
 std::ostream& operator << (std::ostream& os, const PhoneBook& phonebook)
 {
 	std::size_t col_width = 10;
@@ -47,16 +59,17 @@ std::ostream& operator << (std::ostream& os, const PhoneBook& phonebook)
 		<< "+-------------------------------------------+" << std::endl;
 	for (int i = 0; i < 8; i++)
 	{
-		std::string print_first_name = phonebook.list[i].first_name.substr(0, col_width);
-		if (phonebook.list[i].first_name.length() > col_width)
+		Contact c = phonebook.get_contact(i);
+		std::string print_first_name = c.get_first_name().substr(0, col_width);
+		if (c.get_first_name().length() > col_width)
 			print_first_name[col_width - 1] = '.';
 
-		std::string print_last_name = phonebook.list[i].last_name.substr(0, col_width);
-		if (phonebook.list[i].last_name.length() > col_width)
+		std::string print_last_name = c.get_last_name().substr(0, col_width);
+		if (c.get_last_name().length() > col_width)
 			print_last_name[col_width - 1] = '.';
 
-		std::string print_nickname = phonebook.list[i].nickname.substr(0, col_width);
-		if (phonebook.list[i].nickname.length() > col_width)
+		std::string print_nickname = c.get_nickname().substr(0, col_width);
+		if (c.get_nickname().length() > col_width)
 			print_nickname[col_width - 1] = '.';
 
 		os
@@ -72,9 +85,10 @@ std::ostream& operator << (std::ostream& os, const PhoneBook& phonebook)
 	return (os);
 }
 
-static int	input_contact_info(const std::string prompt, std::string& field, bool reduce_input = true)
+static int	get_input_field(const std::string prompt, std::string& in_buf, bool reduce_input = true)
 {
 	std::string input;
+	in_buf = "";
 	while (std::cout << prompt)
 	{
 		getline(std::cin, input);
@@ -91,24 +105,25 @@ static int	input_contact_info(const std::string prompt, std::string& field, bool
 		}
 		break ;
 	}
-	field = input;
+	in_buf = input;
 	return (0);
 }
 
 int	PhoneBook::add_contact(void)
 {
 	Contact c = Contact();
-	if (input_contact_info("First Name: ", c.first_name))
-		return (1);
-	if (input_contact_info("Last Name: ", c.last_name))
-		return (1);
-	if (input_contact_info("Nickname: ", c.nickname))
-		return (1);
-	if (input_contact_info("Number: ", c.number))
-		return (1);
-	if (input_contact_info("Dark Secret: ", c.dark_secret))
-		return (1);
-	std::cout << std::endl;
+	std::string input;
+
+	if (get_input_field("First Name: ", input)) return (1);
+	c.set_first_name(input);
+	if (get_input_field("Last Name: ", input)) return (1);
+	c.set_last_name(input);
+	if (get_input_field("Nickname: ", input)) return (1);
+	c.set_nickname(input);
+	if (get_input_field("Number: ", input)) return (1);
+	c.set_number(input);
+	if (get_input_field("Dark Secret: ", input)) return (1);
+	c.set_dark_secret(input);
 	return (add_contact(c));
 }
 
