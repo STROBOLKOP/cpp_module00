@@ -24,7 +24,7 @@ void	msg_welcome(void)
 
 void	msg_bad_input(const std::string in)
 {
-	std::cerr
+	std::cout
 		<< "Error: '" << in << "' is not a known command\n"
 		;
 }
